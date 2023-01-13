@@ -264,6 +264,12 @@ def Delete(request, id, type):
         DeleteRecord.delete()
         return redirect('/orders')
 
+    if type == 'Messages':
+        DeleteRecord = contact_us.objects.get(id=id)
+        DeleteRecord.delete()
+        return redirect('/admin')
+
+
 
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Update Functions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
