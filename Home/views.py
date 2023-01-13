@@ -5,6 +5,7 @@ from adminpannel.models import contact_us, Q_Products, amazonProduct, WhatPeople
     SocialMedia, Place_Order
 from django.contrib.auth.decorators import login_required
 from cart.cart import Cart
+from Home.definedEmails import *
 
 # Create your views here.
 
@@ -44,6 +45,7 @@ def Contact(request):
         sv = contact_us(name=name, subject=subject, email=email, phone=phone, message=message)
         sv.save()
         messages.success(request, 'Your message has been sent. Thank you!')
+        notify_contact_us(name, email, message)  # send email to customer who contacted by web site
         return redirect('/Contact')
     return render(request, 'contact.html')
 
@@ -216,6 +218,10 @@ def place_order(request):
                           p_total=p_total, p_grand_total=p_grand_total, c_name=c_name, c_email=c_email, c_phone=c_phone,
                           c_city=c_city, c_zip=c_zip, c_country=c_country, c_address1=c_address1, c_address2=c_address2)
         reg.save()
+
+        # sending email to customer
+        notify_order_confirmation(c_name, c_email, c_phone, c_city, c_zip, c_country, c_address1, c_address2,
+                                  p_grand_total)
         cart = Cart(request)
         cart.clear()
         return redirect('/order_placed')

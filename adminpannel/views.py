@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,  login as auth_login, logout
 from adminpannel.forms import UserForm, amazonProductsForm, WhatPeopleSForm, ProductsForm
 from adminpannel.models import amazonProduct, contact_us, WhatPeopleSay, userBlog, Q_Products, Place_Order
-
+from Home.definedEmails import *
 
 # Create your views here
 
@@ -22,9 +22,13 @@ def UserRegister(request):
         if URFM.is_valid():
             user = URFM.save()
             username = URFM.cleaned_data.get('username')
-            group = Group.objects.get(name='Customer')
+            email = URFM.cleaned_data.get('email')
+            URFM.cleaned_data.get('password')
+
+            group = Group.objects.get(name='Customer')   # assign a default group to customer
             user.groups.add(group)
             messages.success(request, f'Hey !  {username} your account created successfully')
+            notify_user_registration(username, email)  # Send email to user he is registered
             return redirect('/user_login')
     else:
         URFM = UserForm()
